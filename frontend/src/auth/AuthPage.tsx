@@ -1,5 +1,4 @@
 import { Outlet } from "react-router";
-import logoSrc from "../assets/logoIcon.png";
 
 const AuthPage = () => {
   return (
@@ -21,8 +20,6 @@ const AuthPage = () => {
           flex flex-col items-center gap-6
         "
       >
-        {/* logo on first line */}
-        <img src={logoSrc} alt="Logo" className="w-32 md:w-40 h-auto" />
         <Outlet />
       </div>
     </div>

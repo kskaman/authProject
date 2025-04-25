@@ -4,13 +4,12 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
 import TextInput from "../../ui/TextInput";
-import Button from "../../ui/Button";
 import Divider from "../../ui/Divider";
 import AuthFormWrapper from "./AuthFormWrapper";
 import PasswordTextInput from "../../ui/PasswordTextInput";
 
-import googleIcon from "../../assets/images/icon-google.svg";
 import { useState } from "react";
+import ThirdPartyLogin from "./ThirdPartyLogin";
 
 interface FormValues {
   email: string;
@@ -46,31 +45,31 @@ const Login = () => {
 
   return (
     <div className="w-full flex flex-col items-center gap-4">
-      <div className="h-8">
-        {errorMessage && (
-          <p className="text-preset-5 text-(--warning-color) text-center">
-            {errorMessage}
-          </p>
-        )}
-        {showVerifyLink && (
-          <p className="text-preset-5 text-(--text-primary) text-center">
-            <Link
-              to="/auth/verify-email"
-              className="font-bold hover:underline text-(--text-secondary)"
-            >
-              Click here
-            </Link>
-            to resend verification
-          </p>
-        )}
-      </div>
-
       <AuthFormWrapper
         heading="Welcome to Note"
         subHeading="Please log in to continue"
         buttonText={isSubmitting ? "Submitting..." : "Submit"}
         onFormSubmit={handleSubmit(onSubmit)}
       >
+        <div className="h-8">
+          {errorMessage && (
+            <p className="text-preset-5 text-(--warning-color) text-center">
+              {errorMessage}
+            </p>
+          )}
+          {showVerifyLink && (
+            <p className="text-preset-5 text-(--text-primary) text-center">
+              <Link
+                to="/auth/verify-email"
+                className="font-bold hover:underline text-(--text-secondary)"
+              >
+                Click here
+              </Link>
+              to resend verification
+            </p>
+          )}
+        </div>
+
         {/* Email */}
         <Controller
           name="email"
@@ -119,14 +118,7 @@ const Login = () => {
       <p className="text-preset-5 text-(--subheading-text-1) text-center">
         Or log in with
       </p>
-      <Button
-        variant="outlined"
-        width="100%"
-        onClick={() => console.log("Google")}
-        icon={<img src={googleIcon} alt={"google icon"} width={"20px"} />}
-      >
-        Google
-      </Button>
+      <ThirdPartyLogin />
 
       {/* Divider */}
       <Divider />

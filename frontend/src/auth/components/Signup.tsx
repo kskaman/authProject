@@ -4,13 +4,12 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
 import TextInput from "../../ui/TextInput";
-import Button from "../../ui/Button";
 import Divider from "../../ui/Divider";
 import AuthFormWrapper from "./AuthFormWrapper";
 import PasswordTextInput from "../../ui/PasswordTextInput";
 
-import googleIcon from "../../assets/images/icon-google.svg";
 import { useState } from "react";
+import ThirdPartyLogin from "./ThirdPartyLogin";
 
 interface FormValues {
   email: string;
@@ -28,7 +27,7 @@ const schema = yup
       .required("Password is required")
       .matches(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#@_])[A-Za-z\d#@_]{8,20}$/,
-        "8–20 chars, upper, lower, digit & #@_"
+        "8-20 chars, upper, lower, digit & #@_"
       ),
   })
   .required();
@@ -52,29 +51,28 @@ const Signup = () => {
 
   return (
     <div className="w-full flex flex-col items-center gap-4">
-      <div className="h-8">
-        {(successMessage || errorMessage) && (
-          <div className="w-full max-w-[396px] mx-auto">
-            {successMessage && (
-              <p className="text-preset-5 text-(--success-color) text-center">
-                {successMessage}
-              </p>
-            )}
-            {errorMessage && (
-              <p className="text-preset-5 text-(--warning-color) text-center">
-                {errorMessage}
-              </p>
-            )}
-          </div>
-        )}
-      </div>
-
       <AuthFormWrapper
         heading="Create Your Account"
         subHeading="Sign up to start organizing your notes and boost productivity"
         buttonText={isSubmitting ? "Submitting..." : "Submit"}
         onFormSubmit={handleSubmit(onSubmit)}
       >
+        <div className="h-8">
+          {(successMessage || errorMessage) && (
+            <div className="w-full max-w-[396px] mx-auto">
+              {successMessage && (
+                <p className="text-preset-5 text-(--success-color) text-center">
+                  {successMessage}
+                </p>
+              )}
+              {errorMessage && (
+                <p className="text-preset-5 text-(--warning-color) text-center">
+                  {errorMessage}
+                </p>
+              )}
+            </div>
+          )}
+        </div>
         {/* Email */}
         <Controller
           name="email"
@@ -113,14 +111,7 @@ const Signup = () => {
       <p className="text-preset-5 text-(--subheading-text-1) text-center">
         Or sign up with
       </p>
-      <Button
-        variant="outlined"
-        width="100%"
-        onClick={() => console.log("Google")}
-        icon={<img src={googleIcon} alt={"google icon"} width={"20px"} />}
-      >
-        Google
-      </Button>
+      <ThirdPartyLogin />
 
       {/* Divider */}
       <Divider />
