@@ -46,7 +46,7 @@ const Login = () => {
   return (
     <div className="w-full flex flex-col items-center gap-4">
       <AuthFormWrapper
-        heading="Welcome to Note"
+        heading="Welcome"
         subHeading="Please log in to continue"
         buttonText={isSubmitting ? "Submitting..." : "Submit"}
         onFormSubmit={handleSubmit(onSubmit)}
