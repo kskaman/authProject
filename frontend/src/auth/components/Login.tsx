@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -10,6 +10,8 @@ import PasswordTextInput from "../../ui/PasswordTextInput";
 
 import { useState } from "react";
 import ThirdPartyLogin from "./ThirdPartyLogin";
+import { FirebaseError } from "firebase/app";
+import { logout, signInUser } from "../services/authService";
 
 interface FormValues {
   email: string;
@@ -27,6 +29,8 @@ const schema = yup
   .required();
 
 const Login = () => {
+  const navigate = useNavigate();
+
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [showVerifyLink, setShowVerifyLink] = useState(false);
 
@@ -35,12 +39,45 @@ const Login = () => {
     handleSubmit,
     formState: { isSubmitting },
   } = useForm<FormValues>({
+    mode: "onSubmit",
+    reValidateMode: "onChange",
     resolver: yupResolver(schema),
     defaultValues: { email: "", password: "" },
   });
 
-  const onSubmit = (data: FormValues) => {
-    console.log("Login", data);
+  const onSubmit = async (data: FormValues) => {
+    setErrorMessage(null);
+    setShowVerifyLink(false);
+
+    try {
+      const uc = await signInUser(data.email, data.password);
+      if (!uc.user.emailVerified) {
+        await logout();
+        setErrorMessage("Please verify your email first.");
+        setShowVerifyLink(true);
+      } else {
+        navigate("/app");
+      }
+    } catch (err) {
+      const error = err as FirebaseError;
+      console.log("Log In error code : ", error.code);
+      console.log("Log In error message : ", error.message);
+
+      // Common Firebase error codes
+      if (
+        error.code === "auth/user-not-found" ||
+        error.code === "auth/invalid-credentials" ||
+        error.code === "auth/wrong-password"
+      ) {
+        setErrorMessage("Invalid credentials");
+      } else if (error.code === "auth/invalid-email") {
+        setErrorMessage("Invalid email address format.");
+      } else {
+        setErrorMessage(
+          "Log-in failed. Please check your credentials and try again."
+        );
+      }
+    }
   };
 
   return (
@@ -51,7 +88,7 @@ const Login = () => {
         buttonText={isSubmitting ? "Submitting..." : "Submit"}
         onFormSubmit={handleSubmit(onSubmit)}
       >
-        <div className="h-8">
+        <div className="h-10">
           {errorMessage && (
             <p className="text-preset-5 text-(--warning-color) text-center">
               {errorMessage}
@@ -65,7 +102,7 @@ const Login = () => {
               >
                 Click here
               </Link>
-              to resend verification
+              <span> </span>to resend verification email
             </p>
           )}
         </div>

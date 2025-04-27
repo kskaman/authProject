@@ -67,66 +67,16 @@
   --input-field-hover-bg: #f5f7fa;
 
   /* warning text color */
-  --warning-color: #fb3748;
+  --warning-color: #d9303e;
+
+  /* success color */
+  --success-color: #43a047;
 
   /* divider color */
   --divider: #e0e4e4;
-}
 
-.dark {
-  /* Containers */
-  --main-container-bg: #121212;
-  --sub-container-bg: #1e1e1e;
-  --modal-bg: #1e1e1e;
-  --form-bg: #2c2c2c;
-  --auth-page-bg: #181818;
-
-  /* Text Colors */
-  --heading-text: #f1f1f1;
-  --subheading-text: #e1e1e1;
-  --body-text: #cccccc;
-
-  /* Primary Button */
-  --btn-primary-bg: #335cff;
-  --btn-primary-hover-bg: #2547d0;
-  --btn-primary-active-bg: #335cff;
-  --btn-primary-text: #ffffff;
-
-  /* Secondary Button */
-  --btn-secondary-bg: #2a2e36;
-  --btn-secondary-hover-bg: #232530;
-  --btn-secondary-active-bg: #2a2e36;
-  --btn-secondary-text: #ffffff;
-  --btn-secondary-hover-text: #ffffff;
-  --btn-secondary-active-text: #ffffff;
-  --btn-secondary-border: #2a2e36;
-
-  /* Outlined Button */
-  --btn-outlined-bg: #232530;
-  --btn-outlined-text: #ffffff;
-  --btn-outlined-hover-bg: #2a2e36;
-  --btn-outlined-hover-text: #ffffff;
-  --btn-outlined-active-bg: #232530;
-  --btn-outlined-active-text: #ffffff;
-  --btn-outlined-border: #5c6576;
-
-  /* Warning Button */
-  --btn-warning-bg: #fb3748;
-  --btn-warning-hover-bg: #e23240;
-  --btn-warning-active-bg: #fb3748;
-  --btn-warning-text: #ffffff;
-
-  /* border color for button when active */
-  --btn-secondary-active-border: #919191;
-  --btn-outlined-active-border: #ffffff;
-
-  /* Color for disabled buttons */
-  --btn-disabled-bg: #2a2d38;
-  --btn-disabled-text: #99a0ae;
-
-  /* color for button shadow when active */
-  --btn-inner-shadow-color: #232530;
-  --btn-outer-shadow-color: #4b5160;
+  /* loader dots */
+  --loader-color: #000000;
 }
 
 @layer components {

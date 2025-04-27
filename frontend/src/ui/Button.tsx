@@ -4,7 +4,7 @@ import { ButtonVariant, buttonVariants } from "../constants/buttonVariants";
 
 interface ButtonProps {
   variant?: ButtonVariant;
-  children: string;
+  children: string | ReactNode;
   icon?: ReactNode;
   /** only used for text‑only or icon‑only variants */
   color?: string;
@@ -36,7 +36,8 @@ const Button = ({
     items-center
     justify-center
     gap-2 
-    cursor-pointer`;
+    cursor-pointer
+    p-4`;
 
   // only “regular” variants get rounded corners + transitions + active/focus styles
   const regularShape = isRegular

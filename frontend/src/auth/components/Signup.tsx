@@ -10,6 +10,8 @@ import PasswordTextInput from "../../ui/PasswordTextInput";
 
 import { useState } from "react";
 import ThirdPartyLogin from "./ThirdPartyLogin";
+import { signUpUser } from "../services/authService";
+import { FirebaseError } from "firebase/app";
 
 interface FormValues {
   email: string;
@@ -39,14 +41,38 @@ const Signup = () => {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { isSubmitting },
   } = useForm<FormValues>({
+    mode: "onSubmit",
+    reValidateMode: "onChange",
     resolver: yupResolver(schema),
     defaultValues: { email: "", password: "" },
   });
 
-  const onSubmit = (data: FormValues) => {
-    console.log("Sign up", data);
+  const onSubmit = async (data: FormValues) => {
+    setSuccessMessage(null);
+    setErrorMessage(null);
+
+    try {
+      await signUpUser(data.email, data.password);
+
+      setSuccessMessage(
+        "AccountCreated! Check your inbox to verify your email."
+      );
+      reset();
+    } catch (err) {
+      const error = err as FirebaseError;
+      if (error.code === "auth/email-already-in-use") {
+        setErrorMessage("This email is already in use.");
+      } else if (error.code === "auth/invalid-email") {
+        setErrorMessage("Invalid email address.");
+      } else if (error.code === "auth/weak-password") {
+        setErrorMessage("Weak password. Please choose a stronger one.");
+      } else {
+        setErrorMessage("Sign-up failed. Please try again.");
+      }
+    }
   };
 
   return (
@@ -57,7 +83,7 @@ const Signup = () => {
         buttonText={isSubmitting ? "Submitting..." : "Submit"}
         onFormSubmit={handleSubmit(onSubmit)}
       >
-        <div className="h-8">
+        <div className="h-10">
           {(successMessage || errorMessage) && (
             <div className="w-full max-w-[396px] mx-auto">
               {successMessage && (
