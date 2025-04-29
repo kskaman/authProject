@@ -2,15 +2,12 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import { addHours } from "date-fns";
+import { v4 as uuidv4 } from "uuid";
 import prisma from "../prismaClient.js";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import redis from "../redisClient.js";
 import { sendEmail } from "../utils/sendEmail.js";
-
-// Utility: generate JWT
-const generateToken = (userId) =>
-  jwt.sign({ id: userId }, JWT_SECRET, { expiresIn: "1h" });
 
 /**
  * Signup: create user + nested settings & balance + email verification token
@@ -45,7 +42,7 @@ export const signup = async (req, res) => {
     });
 
     // 5. Send verification email
-    const verifyLink = `${process.env.BACKEND_URL}/auth/login?t=${verificationToken}`;
+    const verifyLink = `${process.env.BACKEND_URL}/api/auth/verify-email?t=${verificationToken}`;
     await sendEmail({
       to: email,
       subject: "Verify Your Email",
@@ -96,7 +93,7 @@ export const verifyEmail = async (req, res) => {
       },
     });
 
-    return res.redirect(`${FRONTEND_URL}/auth/login`);
+    return res.redirect(`${process.env.FRONTEND_URL}/auth/login`);
   } catch (err) {
     console.error("Verify Email error:", err);
     return res
@@ -125,7 +122,7 @@ export const resendVerification = async (req, res) => {
       data: { verificationToken, verificationTokenExpiry },
     });
 
-    const verifyLink = `${process.env.BACKEND_URL}/auth/login?t=${verificationToken}`;
+    const verifyLink = `${process.env.BACKEND_URL}/api/auth/verify-email?t=${verificationToken}`;
     await sendEmail({
       to: email,
       subject: "Verify your e-mail",
@@ -161,7 +158,7 @@ export const login = async (req, res) => {
     }
 
     // 4. Create session id and store in Redis (4 h)
-    const sid = uuid();
+    const sid = uuidv4();
     await redis.set(`SESSION:${sid}`, user.id, { EX: 60 * 60 * 4 });
 
     // 5. http-only cookie
@@ -207,7 +204,7 @@ export const forgotPassword = async (req, res) => {
     });
 
     // 3. Send reset password email
-    const resetLink = `${process.env.BACKEND_URL}/api/auth/verify-reset?token=${resetToken}`;
+    const resetLink = `${process.env.BACKEND_URL}/api/auth/verify-reset?t=${resetToken}`;
     await sendEmail({
       to: email,
       subject: "Password Reset Request",
@@ -240,11 +237,13 @@ export const verifyReset = async (req, res) => {
   });
 
   // create short-lived sid (1 hr)
-  const sid = uuid();
+  const sid = uuidv4();
   await redis.set(`SESSION_RESET:${sid}`, user.id, { EX: 60 * 60 });
 
   // redirect to front-end without revealing long token
-  return res.redirect(`${FRONTEND_URL}/auth/reset-password?sid=${sid}`);
+  return res.redirect(
+    `${process.env.FRONTEND_URL}/auth/reset-password?sid=${sid}`
+  );
 };
 
 /**
@@ -266,7 +265,7 @@ export const resetPassword = async (req, res) => {
   });
 
   await redis.del(`SESSION_RESET:${sid}`); // one-time use
-  res.json({ message: "Password changed. Please log in." });
+  res.json({ message: "Password changed." });
 };
 
 /**

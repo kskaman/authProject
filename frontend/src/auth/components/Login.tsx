@@ -46,6 +46,7 @@ const Login = () => {
     control,
     handleSubmit,
     getValues,
+    reset,
     formState: { isSubmitting },
   } = useForm<FormValues>({
     mode: "onSubmit",
@@ -82,6 +83,7 @@ const Login = () => {
       await resendVerification(getValues("email"));
       setShowVerifyLink(false);
       setMsg("If your email is registered, a verification link has been sent.");
+      reset();
     } catch {
       setErrorMessage("Could not send verification email.");
     }
@@ -95,7 +97,7 @@ const Login = () => {
         buttonText={isSubmitting ? "Submitting..." : "Submit"}
         onFormSubmit={handleSubmit(onSubmit)}
       >
-        <div className="h-8">
+        <div className="h-14">
           {msg && (
             <p className="text-preset-5 text-(--warning-color) text-center">
               {msg}
@@ -107,13 +109,15 @@ const Login = () => {
             </p>
           )}
           {showVerifyLink && (
-            <Button
-              variant="text"
-              onClick={handleResend}
-              disabled={!getValues("email")}
-            >
-              Resend verification email
-            </Button>
+            <div className="flex justify-center items-center">
+              <Button
+                variant="text"
+                onClick={handleResend}
+                disabled={!getValues("email")}
+              >
+                Resend verification email
+              </Button>
+            </div>
           )}
         </div>
 

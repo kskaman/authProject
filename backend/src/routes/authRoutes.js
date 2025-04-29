@@ -24,19 +24,19 @@ const loginLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
   max: 20,
   store: new RedisStore({
-    sendCommand: (...args) => redisClient.sendCommand(args),
+    sendCommand: (...args) => redis.sendCommand(args),
   }),
-  message: { error: "Too many login attempts. Try again in an hour." },
+  message: { message: "Too many attempts. Try again in an hour." },
 });
 
 // throttle sign-ups (optional, e.g. 5 per hour)
 const signupLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
   max: 5,
+  message: { message: "Too many requests. Try again later." },
   store: new RedisStore({
-    sendCommand: (...args) => redisClient.sendCommand(args),
+    sendCommand: (...args) => redis.sendCommand(args),
   }),
-  message: { error: "Too many sign-ups. Try again later." },
 });
 
 // throttle password resets (optional, e.g. 5 per hour)
@@ -44,9 +44,9 @@ const passwordResetLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
   max: 5,
   store: new RedisStore({
-    sendCommand: (...args) => redisClient.sendCommand(args),
+    sendCommand: (...args) => redis.sendCommand(args),
   }),
-  message: { error: "Too many password reset requests. Try again later." },
+  message: { message: "Too many requests. Try again later." },
 });
 
 // ——— Validation chains ———

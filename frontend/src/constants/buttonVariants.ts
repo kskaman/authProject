@@ -40,7 +40,8 @@ export const buttonVariants = {
     `,
     text: `
       bg-transparent
-      p-[4px
+      p-[4px]
+      hover:underline
     `,
     icon: `
       bg-transparent

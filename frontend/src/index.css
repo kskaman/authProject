@@ -69,8 +69,14 @@
   /* warning text color */
   --warning-color: #fb3748;
 
+  /* success color */
+  --success-color: #43a047;
+
   /* divider color */
   --divider: #e0e4e4;
+
+  /* loader dots */
+  --loader-color: #000000;
 }
 
 .dark {

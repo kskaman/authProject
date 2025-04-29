@@ -35,7 +35,7 @@ const Button = ({
     flex
     items-center
     justify-center
-    gap-2 
+    gap-2 p-4
     cursor-pointer`;
 
   // only “regular” variants get rounded corners + transitions + active/focus styles

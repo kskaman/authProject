@@ -4,11 +4,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { isAxiosError } from "axios";
 
-import TextInput from "../../ui/TextInput";
 import AuthFormWrapper from "./AuthFormWrapper";
 
 import { useState } from "react";
 import { resetPassword as resetApi } from "../services/authService";
+import PasswordTextInput from "../../ui/PasswordTextInput";
 
 interface FormValues {
   newPassword: string;
@@ -59,7 +59,7 @@ const ResetPassword = () => {
     try {
       const res = await resetApi({ sid, newPassword: data.newPassword });
       setMessage(res.data.message);
-      setTimeout(() => navigate("/auth/login"), 5000);
+      setTimeout(() => navigate("/auth/login"), 2000);
     } catch (err: unknown) {
       if (isAxiosError(err)) {
         setErrorMessage(err.response?.data?.message ?? "Reset failed");
@@ -95,11 +95,10 @@ const ResetPassword = () => {
           name="newPassword"
           control={control}
           render={({ field, fieldState: { error } }) => (
-            <TextInput
-              {...field}
-              type="password"
-              label="New Password"
-              placeholder="Enter new password"
+            <PasswordTextInput
+              value={field.value}
+              onChange={field.onChange}
+              label="Password"
               error={error}
             />
           )}
@@ -110,11 +109,10 @@ const ResetPassword = () => {
           name="confirmPassword"
           control={control}
           render={({ field, fieldState: { error } }) => (
-            <TextInput
-              {...field}
-              type="password"
-              label="Confirm Password"
-              placeholder="Confirm new password"
+            <PasswordTextInput
+              value={field.value}
+              onChange={field.onChange}
+              label="Password"
               error={error}
             />
           )}
