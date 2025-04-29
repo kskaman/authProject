@@ -7,6 +7,8 @@ import TextInput from "../../ui/TextInput";
 import Divider from "../../ui/Divider";
 import AuthFormWrapper from "./AuthFormWrapper";
 import { useState } from "react";
+import { forgotPassword as forgotApi } from "../services/authService";
+import { isAxiosError } from "axios";
 
 interface FormValues {
   email: string;
@@ -28,14 +30,29 @@ const ForgotPassword = () => {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { isSubmitting },
   } = useForm<FormValues>({
+    mode: "onSubmit",
+    reValidateMode: "onChange",
     resolver: yupResolver(schema),
     defaultValues: { email: "" },
   });
 
-  const onSubmit = (data: FormValues) => {
-    console.log("Forgot Password", data);
+  const onSubmit = async (data: FormValues) => {
+    setMessage(null);
+    setErrorMessage(null);
+    try {
+      const res = await forgotApi(data.email);
+      setMessage(res.data.message);
+      reset();
+    } catch (err) {
+      if (isAxiosError(err)) {
+        setErrorMessage(err.response?.data?.message ?? "Request failed");
+      } else {
+        setErrorMessage("An unexpected error occurred");
+      }
+    }
   };
 
   return (

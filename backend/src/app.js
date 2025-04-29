@@ -3,6 +3,7 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
+import router from "./routes/index.js";
 
 const app = express();
 
@@ -32,9 +33,10 @@ app.use(cookieParser());
 // Log HTTP requests in development mode
 app.use(morgan("dev"));
 
-// Sample route to test if server is running
-app.get("/", (req, res) => {
-  res.send("API is running...");
+app.use("/api", router);
+
+app.use("/api", (req, res) => {
+  res.send("Api is running.");
 });
 
 export default app;

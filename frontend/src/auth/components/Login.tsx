@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -10,6 +10,14 @@ import PasswordTextInput from "../../ui/PasswordTextInput";
 
 import { useState } from "react";
 import ThirdPartyLogin from "./ThirdPartyLogin";
+import { useAuth } from "../hooks/useAuth";
+import {
+  login as loginApi,
+  me,
+  resendVerification,
+} from "../services/authService";
+import { isAxiosError } from "axios";
+import Button from "../../ui/Button";
 
 interface FormValues {
   email: string;
@@ -27,20 +35,56 @@ const schema = yup
   .required();
 
 const Login = () => {
+  const navigate = useNavigate();
+  const { setUser } = useAuth();
+
+  const [msg, setMsg] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [showVerifyLink, setShowVerifyLink] = useState(false);
 
   const {
     control,
     handleSubmit,
+    getValues,
     formState: { isSubmitting },
   } = useForm<FormValues>({
+    mode: "onSubmit",
+    reValidateMode: "onChange",
     resolver: yupResolver(schema),
     defaultValues: { email: "", password: "" },
   });
 
-  const onSubmit = (data: FormValues) => {
-    console.log("Login", data);
+  const onSubmit = async (data: FormValues) => {
+    setErrorMessage(null);
+    setShowVerifyLink(false);
+    setMsg(null);
+    try {
+      await loginApi(data);
+      const { data: user } = await me();
+      setUser(user);
+      navigate("/app/dashboard", { replace: true });
+    } catch (err) {
+      if (isAxiosError(err)) {
+        // backend sends { message: string }
+        setErrorMessage(err.response?.data?.message ?? "Server error");
+        // if 403 or 400 for unverified email:
+        if (err.response?.status === 403) {
+          setShowVerifyLink(true);
+        }
+      } else {
+        setErrorMessage("An unexpected error occurred");
+      }
+    }
+  };
+
+  const handleResend = async () => {
+    try {
+      await resendVerification(getValues("email"));
+      setShowVerifyLink(false);
+      setMsg("If your email is registered, a verification link has been sent.");
+    } catch {
+      setErrorMessage("Could not send verification email.");
+    }
   };
 
   return (
@@ -52,21 +96,24 @@ const Login = () => {
         onFormSubmit={handleSubmit(onSubmit)}
       >
         <div className="h-8">
+          {msg && (
+            <p className="text-preset-5 text-(--warning-color) text-center">
+              {msg}
+            </p>
+          )}
           {errorMessage && (
             <p className="text-preset-5 text-(--warning-color) text-center">
               {errorMessage}
             </p>
           )}
           {showVerifyLink && (
-            <p className="text-preset-5 text-(--text-primary) text-center">
-              <Link
-                to="/auth/verify-email"
-                className="font-bold hover:underline text-(--text-secondary)"
-              >
-                Click here
-              </Link>
-              to resend verification
-            </p>
+            <Button
+              variant="text"
+              onClick={handleResend}
+              disabled={!getValues("email")}
+            >
+              Resend verification email
+            </Button>
           )}
         </div>
 

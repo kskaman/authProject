@@ -9,7 +9,10 @@ import AuthFormWrapper from "./AuthFormWrapper";
 import PasswordTextInput from "../../ui/PasswordTextInput";
 
 import { useState } from "react";
+import { signup as signupApi } from "../services/authService";
+
 import ThirdPartyLogin from "./ThirdPartyLogin";
+import { isAxiosError } from "axios";
 
 interface FormValues {
   email: string;
@@ -39,14 +42,29 @@ const Signup = () => {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { isSubmitting },
   } = useForm<FormValues>({
+    mode: "onSubmit",
+    reValidateMode: "onChange",
     resolver: yupResolver(schema),
     defaultValues: { email: "", password: "" },
   });
 
-  const onSubmit = (data: FormValues) => {
-    console.log("Sign up", data);
+  const onSubmit = async (data: FormValues) => {
+    setErrorMessage(null);
+    setSuccessMessage(null);
+    try {
+      const res = await signupApi(data);
+      setSuccessMessage(res.data.message);
+      reset();
+    } catch (err) {
+      if (isAxiosError(err)) {
+        setErrorMessage(err.response?.data?.message ?? "Signup failed");
+      } else {
+        setErrorMessage("An unexpected error occurred.")
+      }
+    }
   };
 
   return (

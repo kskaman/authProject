@@ -86,6 +86,7 @@ const TextInput = ({
           placeholder={placeholder}
           disabled={disabled}
           onChange={onChange}
+          autoComplete="off"
           className="
             flex-1 
             bg-transparent 
