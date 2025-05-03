@@ -166,7 +166,7 @@ export const login = async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
-      maxAge: 1000 * 60 * 60 * 4, // 4 h
+      maxAge: 1000 * 60 * 60 * 12, // 12 h
     });
 
     return res.json({ message: "Logged in successfully." });
@@ -286,5 +286,35 @@ export const getCurrentUser = async (req, res) => {
   } catch (e) {
     console.error("me error:", e);
     return res.status(500).json({ message: "Server error" });
+  }
+};
+
+/**
+ * Delete current user record: /api/users/me
+ */
+export const deleteCurrentUer = async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    // Delete session from Redis
+    const sid = req.cookies.sid;
+    if (sid) await redis.del(`SESSION:${sid}`);
+
+    // Delete user from DB
+    await prisma.user.delete({
+      where: { id: userId },
+    });
+
+    // Clear cookie
+    res.clearCookie("sid", {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+    });
+
+    return res.json({ message: "Account deleted successfully." });
+  } catch (err) {
+    console.error("Delete account error:", err);
+    return res.status(500).json({ message: "Server error." });
   }
 };

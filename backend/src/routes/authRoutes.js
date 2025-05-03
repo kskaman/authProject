@@ -13,6 +13,7 @@ import {
   getCurrentUser,
   resendVerification,
   verifyReset,
+  deleteCurrentUer,
 } from "../controllers/authController.js";
 import { authenticate } from "../middleware/authMiddleware.js";
 
@@ -111,6 +112,7 @@ router.post(
 
 // Protected endpoints
 router.get("/users/me", authenticate, getCurrentUser);
+router.delete("users/me", authenticate, deleteCurrentUer);
 
 // Logout
 router.post("/logout", authenticate, async (req, res) => {
