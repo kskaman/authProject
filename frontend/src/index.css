@@ -4,6 +4,7 @@
   /* Containers */
   --main-container-bg: #ffffff;
   --sub-container-bg: #ffffff;
+  --container-bg-option-1: #f3f5f8;
   --modal-bg: #ffffff;
   --form-bg: #f7f7f7;
   --auth-page-bg: #f3f5f8;
@@ -15,6 +16,7 @@
   --heading-text: #0e121b;
   --subheading-text-1: #525866;
   --body-text-1: #555555;
+  --body-text-2: #2b303b;
   --link-text-hover-color: "0e121b";
 
   /* Primary Button */
@@ -77,6 +79,11 @@
 
   /* loader dots */
   --loader-color: #000000;
+
+  /* Modal */
+  --modal-bg: #ffffff;
+  --modal-overlay: rgba(0, 0, 0, 0.4);
+  --modal-border: #e0e4ea;
 }
 
 @layer components {

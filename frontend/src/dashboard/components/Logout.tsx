@@ -9,9 +9,9 @@ const LogoutButton = () => {
   const { setUser } = useAuth();
 
   const handleLogout = async () => {
-    navigate("/auth/login", { replace: true });
-    setUser(null);
     await logout();
+    setUser(null);
+    navigate("/auth/login", { replace: true });
   };
 
   return (

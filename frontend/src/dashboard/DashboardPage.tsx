@@ -9,8 +9,12 @@ const DashboardPage = () => {
   if (!user) return <Loader />;
 
   return (
-    <div className="min-w-[100%]">
-      <div className="bg-[--sub-container-bg] rounded-2xl p-6">
+    <div
+      className="min-w-[100%] min-h-[50vh]
+     flex flex-col justify-center items-center
+      space-y-8"
+    >
+      <div className="bg-(--container-bg-option-1) rounded-2xl p-6">
         <h2 className="text-preset-2 mb-4 text-[--heading-text]">User Info</h2>
         <p>
           <strong className="text-preset-4 text-[--subheading-text-1]">
@@ -26,7 +30,7 @@ const DashboardPage = () => {
         </p>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-8">
+      <div className="flex flex-col gap-4">
         <div className="w-60">
           <LogoutButton />
         </div>
