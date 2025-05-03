@@ -21,4 +21,11 @@ export const resetPassword =
 export const resendVerification = (email: string) => 
     api.post("/auth/resend-verification", { email })
 
-export const me = () => api.get("/auth/users/me");
+export const deleteAccount = async () => {
+    return await api.delete("/auth/users/me", { withCredentials: true });
+};
+  
+export const me = async () => {
+    const response = await api.get("/auth/users/me", { withCredentials: true });
+    return response.data;
+}

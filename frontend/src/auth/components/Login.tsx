@@ -61,7 +61,7 @@ const Login = () => {
     setMsg(null);
     try {
       await loginApi(data);
-      const { data: user } = await me();
+      const user = await me();
       setUser(user);
       navigate("/app/dashboard", { replace: true });
     } catch (err) {

@@ -3,26 +3,38 @@ import { AuthRoutes } from "./auth/AuthRoutes";
 import ProtectedRoute from "./components/ProtectedRoutes";
 import MainRoutes from "./MainApp/MainRoutes";
 import NotFound from "./NotFound";
+import { useAuth } from "./auth/hooks/useAuth";
 
 const App = () => {
+  const { user } = useAuth();
+
   return (
     <BrowserRouter basename="/">
       <Routes>
+        {/* ---- default landing: send to the right place ---- */}
+        <Route
+          path="/"
+          element={
+            <Navigate to={user ? "/app/dashboard" : "/auth/login"} replace />
+          }
+        />
+
+        {/* ---- AUTH ---- */}
+        {!user && <Route path="/auth/*" element={<AuthRoutes />} />}
         {/* / → /auth/login */}
         <Route path="/" element={<Navigate to="/auth/login" replace />} />
 
-        {/* /auth/* → your auth routes */}
-        <Route path="auth/*" element={<AuthRoutes />} />
-
         {/* Protected Dashboard route */}
-        <Route
-          path="/app/*"
-          element={
-            <ProtectedRoute>
-              <MainRoutes />
-            </ProtectedRoute>
-          }
-        />
+        {user && (
+          <Route
+            path="/app/*"
+            element={
+              <ProtectedRoute>
+                <MainRoutes />
+              </ProtectedRoute>
+            }
+          />
+        )}
 
         {/* anything else → /auth/login */}
         <Route path="*" element={<NotFound />} />

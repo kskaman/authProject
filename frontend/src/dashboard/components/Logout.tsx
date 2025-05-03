@@ -9,23 +9,22 @@ const LogoutButton = () => {
   const { setUser } = useAuth();
 
   const handleLogout = async () => {
-    await logout();
-    setUser(null);
     navigate("/auth/login", { replace: true });
+    setUser(null);
+    await logout();
   };
 
   return (
     <Button
       onClick={handleLogout}
-      variant="outlined"
-      height="56px"
+      variant="primary"
       icon={
         <span className="rounded-[50%] p-2">
           <CiLogout size={24} />
         </span>
       }
     >
-      <span className="hidden sm:inline">Logout</span>
+      <span>Logout</span>
     </Button>
   );
 };
